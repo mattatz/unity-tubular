@@ -81,15 +81,8 @@ namespace Curve {
 
 			int i = 0, il = arcLengths.Length;
 
-			float targetArcLength; // The targeted u distance value to get
-			/*
-			if ( distance ) {
-				targetArcLength = distance;
-			} else {
-				targetArcLength = u * arcLengths[il - 1];
-			}
-			*/
-			targetArcLength = u * arcLengths[il - 1];
+            // The targeted u distance value to get
+			float targetArcLength = u * arcLengths[il - 1];
 
 			// binary search for the index with largest value smaller than target u distance
 
@@ -146,19 +139,7 @@ namespace Curve {
 			return t;
 		}
 
-		// https://github.com/neilmendoza/ofxPtf
-		/*
-		public List<FrenetFrame> ComputeParallelTransportFrames (int segments, bool closed) {
-			var ptf = new ParallelTransportFrame();
-			var frames = ptf.Build(Curve, segments);
-			// var frames = new List<FrenetFrame>();
-
-			return frames;
-		}
-		*/
-
 		public List<FrenetFrame> ComputeFrenetFrames (int segments, bool closed) {
-			// see http://www.cs.indiana.edu/pub/techreports/TR425.pdf
 			var normal = new Vector3();
 
 			var tangents = new Vector3[segments + 1];
@@ -233,14 +214,11 @@ namespace Curve {
 				theta = Mathf.Acos(Mathf.Clamp(Vector3.Dot(normals[0], normals[segments]), -1f, 1f));
 				theta /= segments;
 
-				// if (tangents[ 0 ].dot( vec.crossVectors( normals[ 0 ], normals[ segments ] ) ) > 0 ) {
 				if (Vector3.Dot(tangents[0], Vector3.Cross(normals[0], normals[segments])) > 0f) {
 					theta = - theta;
 				}
 
 				for (int i = 1; i <= segments; i++) {
-					// twist a little...
-					// normals[ i ].applyMatrix4( mat.makeRotationAxis( tangents[ i ], theta * i ) );
 					normals[i] = (Quaternion.AngleAxis(Mathf.Deg2Rad * theta * i, tangents[i]) * normals[i]);
 					binormals[i] = Vector3.Cross(tangents[i], normals[i]);
 				}

@@ -49,8 +49,6 @@ namespace Curve {
 
 	}
 
-	// var px = new CubicPoly(), py = new CubicPoly(), pz = new CubicPoly();
-
 	public class CatmullRomCurve : Curve {
 
 		CubicPoly px, py, pz;
@@ -81,7 +79,6 @@ namespace Curve {
 				p0 = points[(intPoint - 1) % l];
 			} else {
 				// extrapolate first point
-				// tmp.subVectors( points[ 0 ], points[ 1 ] ).add( points[ 0 ] );
 				tmp = (points[0] - points[1]) + points[0];
 				p0 = tmp;
 			}
@@ -97,34 +94,7 @@ namespace Curve {
 				p3 = tmp;
 			}
 
-			/*
-			if ( this.type === undefined || this.type === 'centripetal' || this.type === 'chordal' ) {
-
-				// init Centripetal / Chordal Catmull-Rom
-				var pow = this.type === 'chordal' ? 0.5 : 0.25;
-
-				var dt0 = Mathf.Pow(p0.distanceToSquared( p1 ), pow );
-				var dt1 = Mathf.Pow(p1.distanceToSquared( p2 ), pow );
-				var dt2 = Mathf.Pow(p2.distanceToSquared( p3 ), pow );
-
-				// safety check for repeated points
-				if (dt1 < 1e-4) dt1 = 1.0;
-				if (dt0 < 1e-4) dt0 = dt1;
-				if (dt2 < 1e-4) dt2 = dt1;
-
-				px.InitNonuniformCatmullRom( p0.x, p1.x, p2.x, p3.x, dt0, dt1, dt2 );
-				py.InitNonuniformCatmullRom( p0.y, p1.y, p2.y, p3.y, dt0, dt1, dt2 );
-				pz.InitNonuniformCatmullRom( p0.z, p1.z, p2.z, p3.z, dt0, dt1, dt2 );
-			} else if ( this.type === 'catmullrom' ) {
-				var tension = this.tension !== undefined ? this.tension : 0.5;
-				px.InitCatmullRom( p0.x, p1.x, p2.x, p3.x, tension );
-				py.InitCatmullRom( p0.y, p1.y, p2.y, p3.y, tension );
-				pz.InitCatmullRom( p0.z, p1.z, p2.z, p3.z, tension );
-			}
-			*/
-
-			// var tension = this.tension !== undefined ? this.tension : 0.5;
-			var tension = 0.5f;
+			const float tension = 0.5f;
 			px.InitCatmullRom(p0.x, p1.x, p2.x, p3.x, tension);
 			py.InitCatmullRom(p0.y, p1.y, p2.y, p3.y, tension);
 			pz.InitCatmullRom(p0.z, p1.z, p2.z, p3.z, tension);
