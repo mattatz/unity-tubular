@@ -12,13 +12,14 @@ namespace Tubular {
 		[SerializeField] protected int tubularSegments = 20;
 		[SerializeField] protected float radius = 0.1f;
 		[SerializeField] protected int radialSegments = 6;
+		[SerializeField] protected bool closed = false;
 
 		void Start () {
 			var tester = GetComponent<CurveTester>();
 			var curve = tester.Build();
 
 			var filter = GetComponent<MeshFilter>();
-			filter.sharedMesh = Tubular.Build(curve, tubularSegments, radius, radialSegments, false);
+			filter.sharedMesh = Tubular.Build(curve, tubularSegments, radius, radialSegments, closed);
 		}
 
 	}

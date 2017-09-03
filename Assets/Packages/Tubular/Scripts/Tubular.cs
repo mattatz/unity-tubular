@@ -13,20 +13,21 @@ namespace Tubular {
 		public static Mesh Build(Curve.Curve curve, int tubularSegments, float radius, int radialSegments, bool closed) {
 			var vertices = new List<Vector3>();
 			var normals = new List<Vector3>();
+			var tangents = new List<Vector4>();
 			var uvs = new List<Vector2>();
 			var indices = new List<int>();
 
 			var frames = curve.ComputeFrenetFrames(tubularSegments, closed);
 
 			for(int i = 0; i < tubularSegments; i++) {
-				GenerateSegment(curve, frames, tubularSegments, radius, radialSegments, vertices, normals, i);
+				GenerateSegment(curve, frames, tubularSegments, radius, radialSegments, vertices, normals, tangents, i);
 			}
-			GenerateSegment(curve, frames, tubularSegments, radius, radialSegments, vertices, normals, (!closed) ? tubularSegments : 0);
+			GenerateSegment(curve, frames, tubularSegments, radius, radialSegments, vertices, normals, tangents, (!closed) ? tubularSegments : 0);
 
 			for (int i = 0; i <= tubularSegments; i++) {
 				for (int j = 0; j <= radialSegments; j++) {
-					float u = 1f * i / tubularSegments;
-					float v = 1f * j / radialSegments;
+					float u = 1f * j / radialSegments;
+					float v = 1f * i / tubularSegments;
 					uvs.Add(new Vector2(u, v));
 				}
 			}
@@ -47,6 +48,7 @@ namespace Tubular {
 			var mesh = new Mesh();
 			mesh.vertices = vertices.ToArray();
 			mesh.normals = normals.ToArray();
+			mesh.tangents = tangents.ToArray();
 			mesh.uv = uvs.ToArray();
 			mesh.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0);
 			return mesh;
@@ -60,6 +62,7 @@ namespace Tubular {
 			int radialSegments, 
 			List<Vector3> vertices, 
 			List<Vector3> normals, 
+			List<Vector4> tangents, 
 			int i
 		) {
 			var u = 1f * i / tubularSegments;
@@ -75,8 +78,11 @@ namespace Tubular {
 				var cos = Mathf.Cos(v);
 
 				Vector3 normal = (cos * N + sin * B).normalized;
-				normals.Add(normal);
 				vertices.Add(p + radius * normal);
+				normals.Add(normal);
+
+				var tangent = fr.Tangent;
+				tangents.Add(new Vector4(tangent.x, tangent.y, tangent.z, 0f));
 			}
 		}
 
