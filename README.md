@@ -22,10 +22,10 @@ public class Demo : MonoBehaviour {
         // define Curve with control points
         var controls = new List<Vector3>() {
             new Vector3(-5f, -2f, -5f),
-			new Vector3(-4f, 1f, 1.5f),
-			new Vector3(2.8f, 1f, 1.2f),
-			new Vector3(-4.2f, 5.8f, -2.32f),
-			new Vector3(-3f, 0.6f, -5.1f)
+            new Vector3(-4f, 1f, 1.5f),
+            new Vector3(2.8f, 1f, 1.2f),
+            new Vector3(-4.2f, 5.8f, -2.32f),
+            new Vector3(-3f, 0.6f, -5.1f)
         };
         var curve = new CatmullRomCurve(controls);
 
