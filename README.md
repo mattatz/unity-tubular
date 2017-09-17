@@ -1,7 +1,7 @@
 unity-tubular
 =====================
 
-Tubular mesh builder for Unity.
+Tubular mesh (tube shape along a curve without torsion) builder for Unity.
 
 ![Demo](https://raw.githubusercontent.com/mattatz/unity-tubular/master/Captures/Capture.gif)
 
