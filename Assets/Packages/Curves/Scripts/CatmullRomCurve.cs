@@ -4,14 +4,10 @@ using UnityEngine;
 
 namespace Curve {
 
-    public class CubicPoly {
+	public class CubicPoly3D {
+		Vector3 c0, c1, c2, c3;
 
-        float c0, c1, c2, c3;
-
-        public CubicPoly() {
-        }
-
-        /*
+		/*
          * Compute coefficients for a cubic polynomial
          *   p(s) = c0 + c1*s + c2*s^2 + c3*s^3
          * such that
@@ -19,44 +15,26 @@ namespace Curve {
          *  and
          *   p'(0) = t0, p'(1) = t1.
          */
-        void Init(float x0, float x1, float t0, float t1) {
-            c0 = x0;
+		public CubicPoly3D(Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, float tension = 0.5f) {
+			var t0 = tension * (v2 - v0);
+			var t1 = tension * (v3 - v1);
+
+			c0 = v1;
             c1 = t0;
-            c2 = - 3 * x0 + 3 * x1 - 2 * t0 - t1;
-            c3 = 2 * x0 - 2 * x1 + t0 + t1;
-        }
+            c2 = -3f * v1 + 3f * v2 - 2f * t0 - t1;
+            c3 = 2f * v1 - 2f * v2 + t0 + t1;
+		}
 
-        public void InitCatmullRom(float x0, float x1, float x2, float x3, float tension) {
-            Init(x1, x2, tension * (x2 - x0), tension * (x3 - x1));
-        }
-
-        public void InitNonuniformCatmullRom(float x0, float x1, float x2, float x3, float dt0, float dt1, float dt2) {
-            // compute tangents when parameterized in [t1,t2]
-            var t1 = (x1 - x0) / dt0 - (x2 - x0) / (dt0 + dt1) + (x2 - x1) / dt1;
-            var t2 = (x2 - x1) / dt1 - (x3 - x1) / (dt1 + dt2) + (x3 - x2) / dt2;
-
-            // rescale tangents for parametrization in [0,1]
-            t1 *= dt1;
-            t2 *= dt1;
-            Init(x1, x2, t1, t2);
-        }
-
-        public float Calc(float t) {
-            var t2 = t * t;
-            var t3 = t2 * t;
-            return c0 + c1 * t + c2 * t2 + c3 * t3;
-        }
-
-    }
+		public Vector3 Calculate(float t) {
+			var t2 = t * t;
+			var t3 = t2 * t;
+			return c0 + c1 * t + c2 * t2 + c3 * t3;
+		}
+	}
 
     public class CatmullRomCurve : Curve {
 
-        CubicPoly px, py, pz;
-
         public CatmullRomCurve(List<Vector3> points, bool closed = false) : base(points, closed) {
-            px = new CubicPoly();
-            py = new CubicPoly();
-            pz = new CubicPoly();
         }
 
         public override Vector3 GetPoint(float t) {
@@ -94,12 +72,8 @@ namespace Curve {
                 p3 = tmp;
             }
 
-            const float tension = 0.5f;
-            px.InitCatmullRom(p0.x, p1.x, p2.x, p3.x, tension);
-            py.InitCatmullRom(p0.y, p1.y, p2.y, p3.y, tension);
-            pz.InitCatmullRom(p0.z, p1.z, p2.z, p3.z, tension);
-
-            return new Vector3(px.Calc(weight), py.Calc(weight), pz.Calc(weight));
+			var poly = new CubicPoly3D(p0, p1, p2, p3);
+			return poly.Calculate(weight);
         }
 
 
