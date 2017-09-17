@@ -136,7 +136,6 @@ namespace Curve {
             var normals = new Vector3[segments + 1];
             var binormals = new Vector3[segments + 1];
 
-            var vec = new Vector3();
             var mat = new Matrix4x4();
 
             float u, theta;
@@ -169,8 +168,7 @@ namespace Curve {
                 normal.Set(0, 0, 1);
             }
 
-            vec = Vector3.Cross(tangents[0], normal).normalized;
-
+            var vec = Vector3.Cross(tangents[0], normal).normalized;
             normals[0] = Vector3.Cross(tangents[0], vec);
             binormals[0] = Vector3.Cross(tangents[0], normals[0]);
 
@@ -182,17 +180,16 @@ namespace Curve {
                 binormals[i] = binormals[i - 1];
 
                 // Rotation axis
-                vec = Vector3.Cross(tangents[i - 1], tangents[i]);
-
-                if (vec.magnitude > float.Epsilon) {
-                    vec.Normalize();
+				var axis = Vector3.Cross(tangents[i - 1], tangents[i]);
+                if (axis.magnitude > float.Epsilon) {
+                    axis.Normalize();
 
                     float dot = Vector3.Dot(tangents[i - 1], tangents[i]);
 
                     // clamp for floating pt errors
                     theta = Mathf.Acos(Mathf.Clamp(dot, -1f, 1f));
 
-                    normals[i] = Quaternion.AngleAxis(theta * Mathf.Rad2Deg, vec) * normals[i];
+                    normals[i] = Quaternion.AngleAxis(theta * Mathf.Rad2Deg, axis) * normals[i];
                 }
 
                 binormals[i] = Vector3.Cross(tangents[i], normals[i]).normalized;
@@ -212,17 +209,14 @@ namespace Curve {
                     normals[i] = (Quaternion.AngleAxis(Mathf.Deg2Rad * theta * i, tangents[i]) * normals[i]);
                     binormals[i] = Vector3.Cross(tangents[i], normals[i]);
                 }
-
             }
 
             var frames = new List<FrenetFrame>();
-
             int n = tangents.Length;
             for(int i = 0; i < n; i++) {
                 var frame = new FrenetFrame(tangents[i], normals[i], binormals[i]);
                 frames.Add(frame);
             }
-
             return frames;
         }
 
