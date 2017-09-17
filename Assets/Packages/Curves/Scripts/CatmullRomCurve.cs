@@ -37,7 +37,7 @@ namespace Curve {
         public CatmullRomCurve(List<Vector3> points, bool closed = false) : base(points, closed) {
         }
 
-        public override Vector3 GetPoint(float t) {
+        protected override Vector3 GetPoint(float t) {
             var points = this.points;
             var l = points.Count;
 

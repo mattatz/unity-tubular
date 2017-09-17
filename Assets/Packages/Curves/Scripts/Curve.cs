@@ -19,9 +19,9 @@ namespace Curve {
             this.closed = closed;
         }
 
-        public abstract Vector3 GetPoint(float t);
+        protected abstract Vector3 GetPoint(float t);
 
-        public virtual Vector3 GetTangent(float t) {
+        protected virtual Vector3 GetTangent(float t) {
             var delta = 0.001f;
             var t1 = t - delta;
             var t2 = t + delta;

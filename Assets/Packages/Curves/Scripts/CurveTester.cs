@@ -78,7 +78,7 @@ namespace Curve {
 			Gizmos.matrix = transform.localToWorldMatrix;
 			for(int i = 0; i < count; i++) {
 				var t = i * delta;
-				var p = curve.GetPoint(t);
+				var p = curve.GetPointAt(t);
 
 				if(point) {
 					Gizmos.color = Color.white;
@@ -86,7 +86,7 @@ namespace Curve {
 				}
 
 				if(tangent) {
-					var t1 = curve.GetTangent(t);
+					var t1 = curve.GetTangentAt(t);
 					var n1 = (t1 + Vector3.one) * 0.5f;
 					Gizmos.color = new Color(n1.x, n1.y, n1.z); 
 					Gizmos.DrawLine(p, p + t1 * dunit);
