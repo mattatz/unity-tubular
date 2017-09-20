@@ -136,8 +136,6 @@ namespace Curve {
             var normals = new Vector3[segments + 1];
             var binormals = new Vector3[segments + 1];
 
-            var mat = new Matrix4x4();
-
             float u, theta;
 
             // compute the tangent vectors for each segment on the curve
